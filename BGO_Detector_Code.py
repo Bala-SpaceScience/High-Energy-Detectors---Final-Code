@@ -1,4 +1,5 @@
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import pandas as pd
@@ -44,11 +45,13 @@ def resolution_model(E, a, b, c):
 def efficiency_model(logE, a, b, c):
     return a + b * logE + c * logE**2
 
+base_path = os.path.join(os.path.dirname(__file__), 'labdata', 'BGO Detector')
+
 file_paths = {
-    "Am241": 'labdata/BGO Detector/BGO AM241 0deg 300sec.Spe',
-    "Ba133": 'labdata/BGO Detector/BGO Ba133 0deg 8min.Spe',
-    "Co60":  'labdata/BGO Detector/BGO Co60 0deg 600sec.Spe', 
-    "Cs137": 'labdata/BGO Detector/BGO Cs137 0deg 300sec.Spe'
+    "Am241": os.path.join(base_path, 'BGO AM241 0deg 300sec.Spe'),
+    "Ba133": os.path.join(base_path, 'BGO Ba133 0deg 8min.Spe'),
+    "Co60": os.path.join(base_path, 'BGO Co60 0deg 600sec.Spe'), 
+    "Cs137": os.path.join(base_path, 'BGO Cs137 0deg 300sec.Spe')
 }
 
 scaling = {
@@ -59,7 +62,12 @@ scaling = {
 }
 
 spectra = {source: load_spectrum(path, scaling[source]) for source, path in file_paths.items()}
-bg_noise = load_spectrum('labdata\BGO Background.Spe')
+
+base_path_bg = os.path.join(os.path.dirname(__file__), 'labdata')
+bg_noise_path = os.path.join(base_path_bg, 'BGO Background.Spe')
+
+
+bg_noise = load_spectrum(bg_noise_path)
 
 def count_plot():
     plt.figure(figsize=(7, 10)) 
@@ -351,12 +359,15 @@ def efficiency_plot(res):
     print(f"\nFitted Efficiency Model: ln(ε) = {a_fit:.4f} + {b_fit:.4f} * ln(E) + {c_fit:.4f} * (ln(E))^2")
 
 def off_axis_plot():
-    ## Define the file paths for the angle measurements
+    # Define the file paths for the angle measurements
+    base_path_1 = os.path.join(os.path.dirname(__file__), 'labdata')
+
+# Define file paths using the base path
     file_paths = {
-        "0deg": 'labdata\BGO AM241 0deg 300sec.Spe',
-        "30deg": 'labdata\BGO AM241 30deg 300sec.Spe',
-        "60deg": 'labdata\BGO AM241 60deg 300sec.Spe',
-        "90deg": 'labdata\BGO AM241 90deg 300sec.Spe'
+        "0deg":  os.path.join(base_path_1, 'BGO AM241 0deg 300sec.Spe'),
+        "30deg": os.path.join(base_path_1, 'BGO AM241 30deg 300sec.Spe'),
+        "60deg": os.path.join(base_path_1, 'BGO AM241 60deg 300sec.Spe'),
+        "90deg": os.path.join(base_path_1, 'BGO AM241 90deg 300sec.Spe')
     }
 
     # Load counts for each angle

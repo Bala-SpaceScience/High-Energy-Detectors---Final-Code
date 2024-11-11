@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import curve_fit
+import os
 
 
 # Function to load data from a .mca file
@@ -69,11 +70,13 @@ def efficiency_model(logE, a, b, c):
 
 
 # File paths for each source's .mca file
+base_path = os.path.join(os.path.dirname(__file__), 'labdata', 'CDTE')
+
 file_paths = {
-    "Am241": 'labdata/CDTE/CDTE_Detector_Am241_0deg_600sec.mca',
-    "Ba133": 'labdata/CDTE/CDTE_Detector_Ba133_0deg_600.mca',
-    "Co60":  'labdata/CDTE/CDTE_Detector_Co60_0deg_1200.mca', 
-    "Cs137": 'labdata/CDTE/CDTE_Detector_Cs137_0deg_600.mca'
+    "Am241": os.path.join(base_path, 'CDTE_Detector_Am241_0deg_600sec.mca'),
+    "Ba133": os.path.join(base_path, 'CDTE_Detector_Ba133_0deg_600.mca'),
+    "Co60": os.path.join(base_path, 'CDTE_Detector_Co60_0deg_1200.mca'), 
+    "Cs137": os.path.join(base_path, 'CDTE_Detector_Cs137_0deg_600.mca')
 }
 
 scaling_factors = {
@@ -84,7 +87,9 @@ scaling_factors = {
 }
 
 spectra = {source: load_spectrum(path, scaling_factors[source]) for source, path in file_paths.items()}
-bg_noise = load_spectrum('labdata\CDTE\CDTE_Background.mca')
+bg_noise_path = os.path.join(base_path, 'CDTE_Background.mca')
+
+bg_noise = load_spectrum(bg_noise_path)
 
 def count_plot():
     # Plotting each spectrum in a separate subplot with peak detection
@@ -109,9 +114,9 @@ def count_plot():
 
 def curve_plot(plot=True):
     file_paths = {
-        "Am241": 'labdata/CDTE/CDTE_Detector_Am241_0deg_600sec.mca',
-        "Ba133": 'labdata/CDTE/CDTE_Detector_Ba133_0deg_600.mca',
-    }
+    "Am241": os.path.join(base_path, 'CDTE_Detector_Am241_0deg_600sec.mca'),
+    "Ba133": os.path.join(base_path, 'CDTE_Detector_Ba133_0deg_600.mca')
+}
 
     scaling_factors = {
         "Am241": 1.0,
@@ -396,11 +401,11 @@ def efficiency_plot(res):
 def off_axis_plot():
     # Define the file paths for the angle measurements
     file_paths = {
-        "0deg": 'labdata/CDTE/CDTE_Detector_Am241_0deg_600sec.mca',
-        "30deg": 'labdata/CDTE/CDTE_Detector_Am241_30deg_600sec.mca',
-        "60deg": 'labdata/CDTE/CDTE_Detector_Am241_60deg_600sec.mca',
-        "90deg": 'labdata/CDTE/CDTE_Detector_Am241_90deg_600sec.mca'
-    }
+    "0deg": os.path.join(base_path, 'CDTE_Detector_Am241_0deg_600sec.mca'),
+    "30deg": os.path.join(base_path, 'CDTE_Detector_Am241_30deg_600sec.mca'),
+    "60deg": os.path.join(base_path, 'CDTE_Detector_Am241_60deg_600sec.mca'),
+    "90deg": os.path.join(base_path, 'CDTE_Detector_Am241_90deg_600sec.mca')
+}
 
     # Load counts for each angle
     counts_per_angle = {angle: load_spectrum(path) for angle, path in file_paths.items()}

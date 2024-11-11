@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import curve_fit
+import os
 
 
 # Function to load data from a .Spe file, skipping non-numeric lines
@@ -56,11 +57,13 @@ def efficiency_model(logE, a, b, c):
 
 
 # File paths for each source's .Spe file
+base_path = os.path.join(os.path.dirname(__file__), 'labdata', 'NaI detector')
+
 file_paths = {
-    "Am241": 'labdata/NaI detector/NaI AM241 0deg 300sec.Spe',
-    "Ba133": 'labdata/NaI detector/NaI Ba133 0deg 300sec.Spe',
-    "Co60":  'labdata/NaI detector/NaI Co60 0deg 600sec.Spe', 
-    "Cs137": 'labdata/NaI detector/NaI Cs137 0deg 300sec.Spe'
+    "Am241": os.path.join(base_path, 'NaI AM241 0deg 300sec.Spe'),
+    "Ba133": os.path.join(base_path, 'NaI Ba133 0deg 300sec.Spe'),
+    "Co60": os.path.join(base_path, 'NaI Co60 0deg 600sec.Spe'),
+    "Cs137": os.path.join(base_path, 'NaI Cs137 0deg 300sec.Spe')
 }
 
 # Scaling factor for Co-60 to match the 300s duration of the other files
@@ -72,8 +75,9 @@ scaling = {
 }
 
 
-# Loading the background spectrum
-bg_noise = load_spectrum('labdata/NaI detector/NaI Background.Spe')
+bg_noise_path = os.path.join(base_path, 'NaI Background.Spe')
+bg_noise = load_spectrum(bg_noise_path)
+
 spectra = {source: load_spectrum(path, scaling[source]) for source, path in file_paths.items()}
 
 # Loading data for each source with scaling applied and noise removed
@@ -332,12 +336,14 @@ def efficiency_plot(res):
 
 def off_axis_plot():
     # Define the file paths for the angle measurements
+    base_path = os.path.join(os.path.dirname(__file__), 'labdata')
+
     file_paths = {
-        "0deg": 'labdata/NaI AM241 0deg 300sec.Spe',
-        "30deg": 'labdata/NAl AM241 30deg 300sec.Spe',
-        "60deg": 'labdata/Nal AM241 60deg 300sec.Spe',
-        "90deg": 'labdata/NAl AM241 90deg 300sec.Spe'
-    }
+    "0deg": os.path.join(base_path, 'NaI AM241 0deg 300sec.Spe'),
+    "30deg": os.path.join(base_path, 'NAl AM241 30deg 300sec.Spe'),
+    "60deg": os.path.join(base_path, 'Nal AM241 60deg 300sec.Spe'),
+    "90deg": os.path.join(base_path, 'NAl AM241 90deg 300sec.Spe')
+}
 
     # Load counts for each angle
     counts_per_angle = {angle: load_spectrum(path) for angle, path in file_paths.items()}
