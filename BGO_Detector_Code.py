@@ -242,7 +242,7 @@ def resolution_plot(res):
     }
 
     # Calibration constants from linear fit
-    a, b = 1.936, 10.315  
+    a, b = 1.947, 18.200  
 
     fwhm_keV = {}
     energy_resolution = {}
